@@ -1,39 +1,28 @@
-// Using the tools and techniques you learned so far,
-// you will scrape a website of your choice, then place the data
-// in a MongoDB database. Be sure to make the database and collection
-// before running this exercise.
-
-// Consult the assignment files from earlier in class
-// if you need a refresher on Cheerio.
-
-// Dependencies
 var express = require("express");
-var mongojs = require("mongojs");
-// Require axios and cheerio. This makes the scraping possible
-var axios = require("axios");
-var cheerio = require("cheerio");
+var exphbs = require("express-handlebars");
+var mongoose = require("mongoose");
+var logger = require("morgan");
 
 // Initialize Express
 var app = express();
+app.use(logger("dev"));
 
 var PORT = process.env.PORT || 3000;
 
-// Database configuration
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
-});
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-// Main route (simple Hello World Message)
-app.get("/", function(req, res) {
-  res.send("Hello world");
-});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Listen on port 3000
-app.listen(PORT, function() {
-  console.log("App running on port 3000!");
-});
+
+app.use(express.static("public"));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+var routes = require("./controllers/articlesController.js");
+
+app.use(routes);
+
+app.listen(PORT, () => console.log(`Example app listening on port ${PORT}`))
