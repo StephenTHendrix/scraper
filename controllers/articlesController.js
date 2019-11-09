@@ -7,19 +7,10 @@ var logger = require("morgan");
 var app = express();
 app.use(logger("dev"));
 
-// router.get("/", function(req, res) {
-//     // cat.all(function(data) {
-//     //   var hbsObject = {
-//     //     cats: data
-//     //   };
-
-//     // res.render("index", hbsObject);
-//       res.render("index");
-//     });
 
     router.get("/scrape", function(req, res) {
       // First, we grab the body of the html with axios
-      axios.get("http://www.echojs.com/").then(function(response) {
+      axios.get("https://www.nytimes.com/section/politics").then(function(response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
         var $ = cheerio.load(response.data);
     
@@ -32,9 +23,16 @@ app.use(logger("dev"));
           result.title = $(this)
             .children("a")
             .text();
-          result.link = $(this)
+          result.description = $(this)
+            .next()
+            .text();
+            result.link =
+            "https://www.nytimes.com" + 
+            $(this)
             .children("a")
             .attr("href");
+
+            // console.log(result)
     
           // Create a new Article using the `result` object built from scraping
           db.Article.create(result)
@@ -60,7 +58,7 @@ app.use(logger("dev"));
         .then(function(dbArticle) {
           // If all Users are successfully found, send them back to the client
           res.render("index", {dbArticle});
-          console.log(dbArticle)
+          // console.log(dbArticle)
         })
         .catch(function(err) {
           // If an error occurs, send the error back to the client

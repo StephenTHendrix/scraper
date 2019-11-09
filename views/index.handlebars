@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <h1>Note Scraper <button id="scrape">Scrape!</button><button id = "unscrape">Unscrape!</button></h1>
+    <h1>News Scraper <button id="scrape">Scrape!</button><button id = "unscrape">Unscrape!</button></h1>
     <div class="container">
   <div class="row">
     <div id="articles" class = "col">
@@ -19,7 +19,9 @@
         <div class="card-body">
           <div class="scrapedInfo">
             <p>{{this.title}}</p>
-            <p>{{this.link}}</p>
+            <p>{{this.description}}</p>
+            <a href = "{{this.link}}">{{this.link}}</a>
+            <br>
             <button id="note" data-id="{{this._id}}">Make note</button>
             </div>
           </div>
