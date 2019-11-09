@@ -2,7 +2,18 @@
       $.get( "/scrape", function( data ) {
         location.reload();
       });
-    })
+    });
+
+    $("#unscrape").on("click", function() {
+      $.ajax({
+        url: '/scrape',
+        type: 'DELETE',
+        success: function(result) {
+           console.log(result);
+        }
+      });
+      location.reload();
+    });
 
     $(document).on("click", "#note", function() {
   // Empty the notes from the note section
@@ -66,4 +77,3 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
-
